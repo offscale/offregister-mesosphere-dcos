@@ -2,16 +2,14 @@ from functools import partial
 from os import path
 from sys import modules
 
+from fabric.context_managers import cd
+from fabric.contrib.files import append, exists
+from fabric.operations import put, run, sudo
+from offregister_fab_utils.fs import cmd_avail
 from offregister_fab_utils.ubuntu.systemd import disable_service
 from offregister_fab_utils.yum import yum_depends
 from offutils import pp
 from pkg_resources import resource_filename
-
-from fabric.context_managers import cd
-from fabric.contrib.files import append, exists
-from fabric.operations import sudo, run, put
-
-from offregister_fab_utils.fs import cmd_avail
 from yaml import load
 
 
