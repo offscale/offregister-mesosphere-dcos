@@ -2,11 +2,11 @@ from functools import partial
 from os import path
 from sys import modules
 
-from fabric.contrib.files import append, exists
 from offregister_fab_utils.fs import cmd_avail
 from offregister_fab_utils.ubuntu.systemd import disable_service
 from offregister_fab_utils.yum import yum_depends
 from offutils import pp
+from patchwork.files import append, exists
 from pkg_resources import resource_filename
 from yaml import load
 
@@ -20,17 +20,18 @@ def housekeeping0(c, *args, **kwargs):
     disable_service(c, "firewalld")
 
     c.sudo("mkdir -p /var/lib/dcos /var/lib/mesos")
-    append("/etc/sudoers", "%wheel ALL=(ALL) NOPASSWD: ALL", use_sudo=True)
+    append(c, c.sudo, "/etc/sudoers", "%wheel ALL=(ALL) NOPASSWD: ALL")
 
     if not cmd_avail(c, "timedatectl") and c.run("timedatectl", hide=True, warn=True):
         raise EnvironmentError("Expected NTP to be enabled.")
 
-    yum_depends("tar", "xz", "unzip", "curl", "ipset")
+    yum_depends(c, "tar", "xz", "unzip", "curl", "ipset")
 
     append(
+        c,
+        c.sudo,
         "/etc/environment",
         "LANG={enc}\nLC_ALL={enc}".format(enc="en_US.utf-8"),
-        use_sudo=True,
     )
 
     # <Cluster node>
