@@ -62,7 +62,7 @@ def housekeeping0(c, *args, **kwargs):
             )
 
 
-def configure1(*args, **kwargs):
+def configure1(c, *args, **kwargs):
     config_join = partial(
         path.join,
         path.join(
